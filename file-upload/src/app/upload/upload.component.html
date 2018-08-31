@@ -1,0 +1,54 @@
+<div class="container text-center border-bottom shadow">
+    <br>  
+    <div *ngIf="pickAble">
+        <!-- Specify that we want to receive an image file (tags: "type" and "accept")-->
+        <input
+            type="file"
+            style="display:none"
+            accept="image/jpeg"
+            (change) = "reset(); validate($event)"
+            name="eyeImage"
+            id="input-dim-1"
+            #fileInput/>
+        <button type="button" class="btn btn-primary btn-lg" (click)="fileInput.click()">Pick a File</button>
+    </div>
+    <br>
+    <ngb-alert *ngIf="invalidImg" (close)="reset()"><b>Image Invalid: </b>Please upload at least 300x300 images</ngb-alert>
+    <br>
+    <!-- This div is currently hidden until the component has an image to display at the target URL (localURL)-->
+    <div *ngIf="localUrl">
+        <!-- Image's name for confirmation-->
+        <p><b>{{getName()}}</b></p>
+        <!-- Image is resized in the client's browser since most images can be large-->
+        <img class="img-fluid" [src]="localUrl" *ngIf="localUrl" width="300" height="300">
+
+        <br><br>
+
+        <div class="btn-group" role="group" aria-label="Submission">
+            <button *ngIf="canSubmit" type="button" class="btn btn-danger btn-lg" (click)="reset();">Back</button>
+
+            <!--Enctype set to "multipart/for-data" which is what Multer accepts (server-side file receiver)
+                The "name" is also important for Multer
+            -->
+            <button 
+                *ngIf="canSubmit"
+                type="button" 
+                name="eyeImage"
+                class="btn btn-success btn-lg" 
+                enctype="multipart/for-data"
+                (click)="onUpload()">Upload
+            </button>            
+        </div>
+        <br><br>
+        <div *ngIf="!done">
+            <p *ngIf="submitted">Processing Image...</p>
+            <div class="loader" *ngIf="submitted"></div>
+        </div>
+        <div *ngIf="done">
+            <p><b>Prediction:</b> {{prediction}}</p>
+            <p><b>{{msg}}</b></p>
+            <button type="button" class="btn btn-danger btn-lg" (click)="reset();">Back</button>
+        </div>
+    </div>
+    <br>
+</div>
